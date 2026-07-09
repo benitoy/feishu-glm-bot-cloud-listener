@@ -114,13 +114,22 @@ async function handleLine(line) {
     body: JSON.stringify(payload),
   });
 
+  const responseText = await response.text().catch(() => '');
   if (!response.ok) {
-    const text = await response.text().catch(() => '');
-    log(`bridge failed status=${response.status} body=${text.slice(0, 200)}`);
+    log(`bridge failed status=${response.status} body=${responseText.slice(0, 300)}`);
     return;
   }
 
-  log(`forwarded message_id=${payload.message_id} chat_type=${payload.chat_type}`);
+  let result = {};
+  try {
+    result = JSON.parse(responseText);
+  } catch {
+    // Keep the bridge alive if a proxy returns a non-JSON success response.
+  }
+
+  log(
+    `forwarded message_id=${payload.message_id} chat_type=${payload.chat_type} replied=${result.replied ?? 'unknown'} mode=${result.mode || result.reason || 'unknown'}`,
+  );
 }
 
 startConsumer();
