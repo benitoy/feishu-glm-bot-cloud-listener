@@ -48,8 +48,9 @@ GitHub Actions is not a paid always-on server. The workflow uses a practical
 free-style rotation:
 
 - It starts manually or on a schedule.
-- It runs for about 4 hours.
-- A scheduled run starts again every 4 hours.
+- It runs for up to about 5 hours and 50 minutes.
+- A recovery check is scheduled every 15 minutes, preventing the multi-hour
+  empty window that the old four-hour rotation could create.
 - `concurrency.cancel-in-progress` makes the new run replace the previous one.
 
 This gives a cloud-hosted long-connection listener without relying on the local
