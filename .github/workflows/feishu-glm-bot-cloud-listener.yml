@@ -3,10 +3,10 @@ name: Feishu GLM bot cloud listener
 on:
   workflow_dispatch:
   schedule:
-    # GitHub Actions uses UTC. Run every 4 hours and let concurrency replace
-    # the previous listener, so the Feishu long-connection is kept alive in
-    # the cloud without relying on the local Codex computer.
-    - cron: "17 */4 * * *"
+    # GitHub Actions uses UTC. Check in every 15 minutes. If GitHub starts an
+    # overlapping run, concurrency cleanly hands over to the new listener.
+    # Otherwise, the next check arrives soon after the active runner exits.
+    - cron: "7,22,37,52 * * * *"
 
 concurrency:
   group: feishu-glm-bot-cloud-listener
@@ -15,7 +15,7 @@ concurrency:
 jobs:
   listen:
     runs-on: ubuntu-latest
-    timeout-minutes: 250
+    timeout-minutes: 350
     steps:
       - name: Checkout
         uses: actions/checkout@v4
